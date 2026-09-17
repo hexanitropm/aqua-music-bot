@@ -17,6 +17,15 @@ bot = commands.Bot(
 async def on_ready():
     print(f"Бот запущен: {bot.user}")
 
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    if message.content == "Яруги":
+        await message.channel.send("пидорасы!")
+
+    await bot.process_commands(message)
 
 token = os.getenv("DISCORD_TOKEN")
 bot.run(token)
