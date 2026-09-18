@@ -1,4 +1,5 @@
 import os
+import asyncio
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -13,20 +14,17 @@ bot = commands.Bot(
     intents=intents
 )
 
+token = os.getenv("DISCORD_TOKEN")
 
 @bot.event
 async def on_ready():
+    synced = await bot.tree.sync()
     print(f"Бот запущен: {bot.user}")
+    print(f"Синхронизировано команд: {len(synced)}")
 
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
+async def main():
+    async with bot:
+        await bot.load_extension("cogs.general")
+        await bot.start(token)
 
-    if message.content == "Яруги":
-        await message.channel.send("пидорасы!")
-
-    await bot.process_commands(message)
-
-token = os.getenv("DISCORD_TOKEN")
-bot.run(token)
+asyncio.run(main())
